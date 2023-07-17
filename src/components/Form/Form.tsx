@@ -1,31 +1,62 @@
-import { type SubmitHandler, useForm } from "react-hook-form";
+import {
+  type ChangeEvent,
+  type FormEventHandler,
+  type KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-type Inputs = {
-  one: "string";
-  two: "string";
-  three: "string";
-  four: "string";
-};
+let currentIndex = 0;
 
 const Form = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>();
+  const [otp, setOtp] = useState<string[]>(new Array(4).fill(""));
+  const [activeIndex, setActiveIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: FormEventHandler<HTMLFormElement> = (data) => {
     console.log(data);
   };
 
+  const handleChange = ({
+    currentTarget: { value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    const newOTP: string[] = [...otp];
+    newOTP[currentIndex] = value.substring(value.length - 1);
+
+    if (!value) setActiveIndex(currentIndex - 1);
+    else setActiveIndex(currentIndex + 1);
+    setOtp(newOTP);
+  };
+
+  const handleKeyDown = (
+    { key }: KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    currentIndex = index;
+    if (key === "Backspace") setActiveIndex(index - 1);
+  };
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [activeIndex]);
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("one", { required: true })} />
-      <input {...register("two", { required: true })} />
-      <input {...register("three", { required: true })} />
-      <input {...register("four", { required: true })} />
-      {errors && <span>Enter a valid code</span>}
+    <form className="space-y-4" onSubmit={onSubmit}>
+      <div className="space-x-2">
+        {otp.map((_, index) => (
+          <input
+            required
+            ref={index === activeIndex ? inputRef : null}
+            key={index}
+            type="number"
+            className="spin-button-none h-12 w-12 rounded border border-zinc-300 bg-transparent text-center text-xl font-semibold outline-none transition duration-200"
+            onChange={handleChange}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            value={otp[index]}
+          />
+        ))}
+      </div>
       <button>Verify Email</button>
     </form>
   );
