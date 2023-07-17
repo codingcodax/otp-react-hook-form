@@ -12,7 +12,9 @@ const Home: NextPage = () => {
       </Head>
       <div className="relative flex min-h-screen flex-col items-center justify-center text-center">
         <h1 className="text-3xl font-bold">Enter Code</h1>
-        <p className="text-zinc-500">We sent OTP code to your email address</p>
+        <p className="mb-10 text-zinc-500">
+          We sent OTP code to your email address
+        </p>
 
         <Form />
       </div>
