@@ -8,7 +8,7 @@ const Home: NextPage = () => {
         <title>OTP Password</title>
         <meta
           title="description"
-          content="OTP password with react hook form and @codingcodax components"
+          content="OTP password with react hook form"
         />
       </Head>
       <div>
